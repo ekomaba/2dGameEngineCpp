@@ -41,6 +41,8 @@ void Game::Initialize() {
         return;
     }
 
+    isRunning = true;
+
 }
 
 void Game::Run() {
@@ -54,6 +56,7 @@ void Game::Run() {
 
 void Game::Destroy() {
 
+    std::cout << "Destroying the game instance!" << std::endl;
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
@@ -77,9 +80,16 @@ void Game::ProcessInput() {
 }
 
 void Game::Update() {
-
+    // todo: update game objects
 }
 
 void Game::Render() {
+
+    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+    SDL_RenderClear(renderer);
+
+    // todo: render all game objects...
+
+    SDL_RenderPresent(renderer); // paints the window
 
 }
