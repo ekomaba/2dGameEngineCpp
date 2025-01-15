@@ -3,6 +3,7 @@
 #include "Game.h"
 
 Game::Game() {
+    isRunning = false;
     std::cout << "Game Constructor called!" << std::endl;
 }
 
@@ -18,7 +19,7 @@ void Game::Initialize() {
     }
 
     // Creating window
-    SDL_Window* window = SDL_CreateWindow(
+    window = SDL_CreateWindow(
         NULL,
         SDL_WINDOWPOS_CENTERED,
         SDL_WINDOWPOS_CENTERED,
@@ -33,7 +34,7 @@ void Game::Initialize() {
     }
     
     // Creating Renderer
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, 0);
+    renderer = SDL_CreateRenderer(window, -1, 0);
 
     if (!renderer) {
         std::cerr << "Error creating SDL Renderer window." << std::endl;
@@ -44,14 +45,35 @@ void Game::Initialize() {
 
 void Game::Run() {
 
+    while(isRunning) {
+        ProcessInput();
+        Update();
+        Render();
+    }
 }
 
 void Game::Destroy() {
 
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
 }
 
 void Game::ProcessInput() {
 
+    SDL_Event sdlEvent;
+    while (SDL_PollEvent(&sdlEvent)) {
+        switch(sdlEvent.type) {
+            case SDL_QUIT:
+                isRunning = false;
+                break;
+            case SDL_KEYDOWN:
+                if (sdlEvent.key.keysym.sym == SDLK_ESCAPE) {
+                    isRunning = false;
+                }
+                break;
+        }
+    }
 }
 
 void Game::Update() {
