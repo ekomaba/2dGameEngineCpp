@@ -15,7 +15,6 @@ Game::~Game() {
 }
 
 void Game::Initialize() {
-
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
         Logger::Err("Error initializing SDL.");
         return;
@@ -65,7 +64,6 @@ void Game::Run() {
 }
 
 void Game::Destroy() {
-
     Logger::Log("Destroying the game instance!");
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
@@ -73,7 +71,6 @@ void Game::Destroy() {
 }
 
 void Game::ProcessInput() {
-
     SDL_Event sdlEvent;
     while (SDL_PollEvent(&sdlEvent)) {
         switch(sdlEvent.type) {
@@ -99,7 +96,6 @@ void Game::Setup() {
 }
 
 void Game::Update() {
-
     int getticks = SDL_GetTicks();
 
     int timeToWait = MILLISECS_PER_FRAME - (getticks - millisecsPreviousFrame);
@@ -117,7 +113,6 @@ void Game::Update() {
 }
 
 void Game::Render() {
-
     // Gray color
     SDL_SetRenderDrawColor(renderer, 21, 21, 21, 255); 
     SDL_RenderClear(renderer);
