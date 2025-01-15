@@ -26,9 +26,6 @@ void Game::Initialize() {
     windowWidth = displayMode.w;
     windowHeight = displayMode.h;
 
-    //windowWidth = 800; 
-    //windowHeight = 600; 
-
     // Creating window
     window = SDL_CreateWindow(
         NULL,
@@ -38,17 +35,14 @@ void Game::Initialize() {
         windowHeight,
         SDL_WINDOW_BORDERLESS
     );
-
+    
     if (!window) {
         Logger::Err("Error creating SDL Window.");
         return;
     }
     
     // Creating Renderer
-    renderer = SDL_CreateRenderer(
-        window, 
-        -1,   
-        SDL_RENDERER_ACCELERATED);
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
     if (!renderer) {
         Logger::Err("Error creating SDL Renderer window.");

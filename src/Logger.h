@@ -20,6 +20,11 @@ class Logger {
         static std::vector<LogEntry> messages;
         static void Log(const std::string& message);
         static void Err(const std::string& message);
+        static void Warn(const std::string& message);
+        static void SaveToFile(const std::string& message);
+
+    private:
+        static void AddLogEntry(LogType type, const std::string& prefix, const std::string& color, const std::string& message);
 };
 
 #endif
