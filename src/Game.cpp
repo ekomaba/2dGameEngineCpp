@@ -18,15 +18,18 @@ void Game::Initialize() {
         return;
     }
 
+    windowWidth = 800; 
+    windowHeight = 600; 
+
     // Creating window
     window = SDL_CreateWindow(
         NULL,
         SDL_WINDOWPOS_CENTERED,
         SDL_WINDOWPOS_CENTERED,
-        800,
-        600,
-        SDL_WINDOW_BORDERLESS)
-        ;
+        windowWidth,
+        windowHeight,
+        SDL_WINDOW_BORDERLESS
+    );
 
     if (!window) {
         std::cerr << "Error creating SDL Window." << std::endl;
@@ -34,12 +37,17 @@ void Game::Initialize() {
     }
     
     // Creating Renderer
-    renderer = SDL_CreateRenderer(window, -1, 0);
+    renderer = SDL_CreateRenderer(
+        window, 
+        -1,   
+        SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
     if (!renderer) {
         std::cerr << "Error creating SDL Renderer window." << std::endl;
         return;
     }
+    
+    SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
 
     isRunning = true;
 

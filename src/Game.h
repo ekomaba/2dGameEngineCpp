@@ -18,7 +18,9 @@ public:
     void ProcessInput();
     void Update();
     void Render();
-    
+
+    int windowWidth;
+    int windowHeight;    
 };
 
 #endif
