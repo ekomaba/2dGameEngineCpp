@@ -104,6 +104,15 @@ void Game::Setup() {
 }
 
 void Game::Update() {
+    Uint32 currentTicks = SDL_GetTicks();
+
+    Uint32 timeToWait = MILLISECS_PER_FRAME - (currentTicks - millisecsPreviousFrame);
+    if (timeToWait > 0) {
+        SDL_Delay(timeToWait);
+    }
+
+    millisecsPreviousFrame = currentTicks;
+    
     playerPosition.x += playerVelocity.x;
     playerPosition.y += playerVelocity.y;
 }
