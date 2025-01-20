@@ -1,5 +1,7 @@
 #include "ECS.h"
 
+int IComponent::nextId = 0;
+
 void System::AddEntity(Entity entity) {
     entities.push_back(entity);
 }
