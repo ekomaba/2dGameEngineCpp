@@ -19,3 +19,16 @@ std::vector<Entity> System::GetSystemEntities() const {
 const Signature& System::GetComponentSignature() const {
     return componentSignature;
 }
+
+Entity Registry::CreateEntity() {
+    int entityId = numEntities++;
+    Entity entity(entityId);
+    entitiesToBeAdded.insert(entity); // Going to be add on next update cicle
+    return entity;
+
+    Logger::Log("Entity created with id = " + std::to_string(entityId));
+}
+
+void Registry::Update() {
+
+}
