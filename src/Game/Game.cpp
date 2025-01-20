@@ -110,6 +110,8 @@ void Game::Setup() {
     
 }
 
+
+
 void Game::Update() {
     int getticks = SDL_GetTicks();
 
