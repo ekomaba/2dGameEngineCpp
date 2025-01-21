@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <typeindex>
 #include <set>
+#include <memory>
 #include "../Logger/Logger.h"
 
 const unsigned int MAX_COMPONENTS = 32;
@@ -104,6 +105,15 @@ public:
     template <typename TComponent> void RemoveComponent(Entity entity);
     template <typename TComponent> bool HasComponent(Entity entity) const;
 
+    // System management
+    template <typename TSystem, typename ...TArgs> void AddSystem(TArgs&& ...args);
+    template <typename TSystem> void RemoveSystem();
+    template <typename TSystem> bool HasSystem() const;
+    template <typename TSystem> TSystem& GetSystem() const;
+
+    // Check the component signature of an entity and add the entity to the systems that match
+    void AddEntityToSystems(Entity entity);
+
     // Processes the entities that are waiting to be added/killed
     void Update();
 
@@ -166,4 +176,28 @@ bool Registry::HasComponent(Entity entity) const {
 
     return entityComponentSignatures[entityId].test(componentId);
 }
+
+template <typename TSystem, typename ...TArgs> 
+void Registry::AddSystem(TArgs&& ...args) {
+    TSystem* newSystem(new TSystem(std::forward<TArgs>(args)...));
+    systems.insert(std::make_pair(std::type_index(typeid(TSystem)), newSystem));
+}
+
+template <typename TSystem> 
+void Registry::RemoveSystem() {
+    auto system = systems.find(std::type_index(typeid(TSystem)));
+    systems.erase(system);
+}
+
+template <typename TSystem> 
+bool Registry::HasSystem() const {
+    return systems.find(std::type_index(typeid(TSystem))) != systems.end();
+}
+
+template <typename TSystem> 
+TSystem& Registry::GetSystem() const {
+    auto system = systems.find(std::type_index(typeid(TSystem)));
+    return *(std::static_pointer_cast<TSystem>(system->second));
+}
+
 #endif
