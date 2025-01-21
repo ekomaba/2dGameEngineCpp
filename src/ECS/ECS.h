@@ -23,6 +23,7 @@ protected:
 // Provides a unique ID for each component type
 template <typename T>
 class Component : public IComponent {
+public:
     static int GetId() {
         static auto id = nextId++;
         return id;
@@ -61,13 +62,13 @@ public:
 
 
 class IPool {
-    public:
-        virtual ~IPool() {};
+public:
+    virtual ~IPool() {};
 };
 
 // Pool 
 template<typename T>
-class Pool : IPool {
+class Pool : public IPool {
 private:
     std::vector<T> data;
 public:
@@ -75,7 +76,7 @@ public:
     virtual ~Pool() = default;
 
     bool isEmpty() const { return data.empty(); }
-    int getSize() const { return data.size(); }
+    int GetSize() const { return data.size(); }
     void Resize(int n) { data.resize(n); }
     void Clear() { data.clear(); }
     void Add(T object) { data.push_back(object); }
@@ -129,7 +130,7 @@ void System::RequireComponent() {
 // Template function to add a new component to a ...
 template <typename TComponent, typename ...TArgs> 
 void Registry::AddComponent(Entity entity, TArgs&& ...args) {
-    const auto componentId = Component<TComponent>::GetId();
+    std::size_t componentId = Component<TComponent>::GetId();
     const auto entityId = entity.GetId();
 
     // If the component id is bigger then component pool size we will increase the Pool's size
@@ -159,6 +160,8 @@ void Registry::AddComponent(Entity entity, TArgs&& ...args) {
 
     // Finally, change the component signature of the entity and set the component id on the bitset to 1
     entityComponentSignatures[entityId].set(componentId);
+
+    Logger::Log("Component id: " + std::to_string(componentId) + " was added to entity id " + std::to_string(entityId));
 }
 
 template <typename TComponent> 
