@@ -88,9 +88,9 @@ public:
 class Registry {
 private:
     int numEntities = 0;
-    std::vector<IPool*> componentPools;
+    std::vector<std::shared_ptr<IPool>> componentPools;
     std::vector<Signature> entityComponentSignatures;
-    std::unordered_map<std::type_index, System*> systems;
+    std::unordered_map<std::type_index, std::shared_ptr<System>> systems;
     std::set<Entity> entitiesToBeAdded;
     std::set<Entity> entitiesToBeKilled;
 
@@ -139,12 +139,12 @@ void Registry::AddComponent(Entity entity, TArgs&& ...args) {
 
     // If we don't have the Pool, it will create it
     if (!componentPools[componentId]) {
-        Pool<TComponent>* newComponentPool = new Pool<TComponent>();
+        std::shared_ptr<Pool<TComponent>> newComponentPool = std::make_shared<Pool<TComponent>>();
         componentPools[componentId] = newComponentPool;
     }
 
     // Get the pool of component values for that component type
-    Pool<TComponent>* componentPool = componentPools[componentId];
+    std::shared_ptr<Pool<TComponent>> componentPool = std::static_pointer_cast<Pool<TComponent>>(componentPools[componentId]);
 
     // If the entity id is greater than the current size of the component pool, then resize the pool
     if (entityId >= componentPool->GetSize()) {
@@ -179,7 +179,7 @@ bool Registry::HasComponent(Entity entity) const {
 
 template <typename TSystem, typename ...TArgs> 
 void Registry::AddSystem(TArgs&& ...args) {
-    TSystem* newSystem(new TSystem(std::forward<TArgs>(args)...));
+    std::shared_ptr<TSystem> newSystem = std::make_shared<TSystem>(std::forward<TArgs>(args)...);
     systems.insert(std::make_pair(std::type_index(typeid(TSystem)), newSystem));
 }
 
