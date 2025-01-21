@@ -37,7 +37,10 @@ private:
 
 public:
     Entity (int id) : id(id) {}; 
+    Entity(const Entity& entity) = default;
     int GetId() const { return id; }
+
+    Entity& operator =(const Entity& other) = default;
     bool operator ==(const Entity& other) const { return id == other.id; }
     bool operator !=(const Entity& other) const { return id != other.id; }
     bool operator >(const Entity& other) const { return id > other.id; }
