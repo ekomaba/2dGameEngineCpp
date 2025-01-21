@@ -102,7 +102,7 @@ public:
     // Component management
     template <typename TComponent, typename ...TArgs> void AddComponent(Entity entity, TArgs&& ...args);
     template <typename TComponent> void RemoveComponent(Entity entity);
-    template <typename TComponent> bool HasComponent(Entity entity);
+    template <typename TComponent> bool HasComponent(Entity entity) const;
 
     // Processes the entities that are waiting to be added/killed
     void Update();
@@ -153,15 +153,15 @@ void Registry::AddComponent(Entity entity, TArgs&& ...args) {
 
 template <typename TComponent> 
 void Registry::RemoveComponent(Entity entity) {
-    const auto componentId = Component<T>::GetId();
+    const auto componentId = Component<TComponent>::GetId();
     const auto entityId = entity.GetId();
 
     entityComponentSignatures[entityId].set(componentId, false);
 }
 
 template <typename TComponent>
-bool Registry::HasComponent(Entity entity) {
-    const auto componentId = Component<T>::GetId();
+bool Registry::HasComponent(Entity entity) const {
+    const auto componentId = Component<TComponent>::GetId();
     const auto entityId = entity.GetId();
 
     return entityComponentSignatures[entityId].test(componentId);
