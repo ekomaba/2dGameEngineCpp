@@ -92,7 +92,7 @@ public:
     void Clear() { data.clear(); }
     void Add(T object) { data.push_back(object); }
     void Set(int index, T object) { data[index] = object; }
-    T& Get(int index) { static_cast<T&>(data[index]); }
+    T& Get(int index) { return static_cast<T&>(data[index]); }
     T& operator [](unsigned int index) { return data[index]; }
 };
 

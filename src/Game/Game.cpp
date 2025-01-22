@@ -7,6 +7,7 @@
 #include "../ECS/ECS.h"
 #include "../Components/TransformComponent.h"
 #include "../Components/RigidBodyComponent.h"
+#include "../Systems/MovementSystem.h"
 
 Game::Game() {
     isRunning = false;
@@ -107,11 +108,12 @@ void Game::ProcessInput() {
 }
 
 void Game::Setup() {
+    registry->AddSystem<MovementSystem>();
+
     Entity tank = registry->CreateEntity();
 
     tank.AddComponent<TransformComponent>(glm::vec2(10, 30));
     tank.AddComponent<RigidBodyComponent>(glm::vec2(10.0, 50.0));
-    tank.RemoveComponent<TransformComponent>();
 }
 
 void Game::Update() {
@@ -131,9 +133,11 @@ void Game::Update() {
 
     millisecsPreviousFrame = getticks;
 
-    // TODO:
-    // MovementSystem.Update();
-    // AllTheSystems...Update();
+    // Update from systems
+    registry->GetSystem<MovementSystem>().Update(deltaTime);
+
+    // Update the registry to process the entities that are waiting to be created/deleted
+    registry->Update();
 }
 
 void Game::Render() {
