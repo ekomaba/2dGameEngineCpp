@@ -71,8 +71,6 @@ void Game::Initialize() {
         Logger::Err("Error creating SDL Renderer window.");
         return;
     }
-    
-    //SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
 
     isRunning = true;
 
@@ -110,7 +108,6 @@ void Game::ProcessInput() {
     }
 }
 
-void Game::Setup() {
 void Game::LoadLevel(int level) {
     // Adding Systems
     registry->AddSystem<MovementSystem>();
@@ -148,7 +145,6 @@ void Game::LoadLevel(int level) {
     mapFile.close();
 
     Entity tank = registry->CreateEntity();
-    tank.AddComponent<TransformComponent>(glm::vec2(0.0, 40), glm::vec2(3.0, 3.0), 45.0);
     tank.AddComponent<TransformComponent>(glm::vec2(50.0, 50.0), glm::vec2(1.0, 1.0), 0.0);
     tank.AddComponent<RigidBodyComponent>(glm::vec2(40.0, 0.0));
     tank.AddComponent<SpriteComponent>("tank-image", 32, 32);
