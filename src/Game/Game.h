@@ -25,6 +25,7 @@ public:
     void Run();
     void Destroy();
     void ProcessInput();
+    void LoadLevel(int level);
     void Setup();
     void Update();
     void Render();
