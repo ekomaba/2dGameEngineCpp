@@ -107,7 +107,8 @@ private:
     std::set<Entity> entitiesToBeKilled;
 
 public:
-    Registry() = default;
+    Registry();
+    ~Registry();
 
     // Entity management
     Entity CreateEntity();

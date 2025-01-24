@@ -22,6 +22,14 @@ const Signature& System::GetComponentSignature() const {
     return componentSignature;
 }
 
+Registry::Registry() {
+    Logger::Log("Registry Constructor Called!");
+}
+
+Registry::~Registry() {
+    Logger::Log("Registry Destructor Called!");
+}
+
 Entity Registry::CreateEntity() {
     std::size_t entityId;
     
