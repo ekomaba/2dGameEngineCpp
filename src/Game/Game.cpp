@@ -118,14 +118,14 @@ void Game::Setup() {
     assetStore->AddTexture(renderer, "truck-image", "./assets/images/truck-ford-right.png");
 
     Entity tank = registry->CreateEntity();
-    tank.AddComponent<TransformComponent>(glm::vec2(10, 30), glm::vec2(1.0, 1.0), 0.0);
-    tank.AddComponent<RigidBodyComponent>(glm::vec2(10.0, 50.0));
-    tank.AddComponent<SpriteComponent>("tank-image", 10, 10);
+    tank.AddComponent<TransformComponent>(glm::vec2(0.0, 40), glm::vec2(3.0, 3.0), 45.0);
+    tank.AddComponent<RigidBodyComponent>(glm::vec2(40.0, 0.0));
+    tank.AddComponent<SpriteComponent>("tank-image", 32, 32);
 
     Entity truck = registry->CreateEntity();
-    truck.AddComponent<TransformComponent>(glm::vec2(20, 60), glm::vec2(1.0, 1.0), 0.0);
-    truck.AddComponent<RigidBodyComponent>(glm::vec2(20.0, 0.0));
-    truck.AddComponent<SpriteComponent>("truck-image", 20, 20);
+    truck.AddComponent<TransformComponent>(glm::vec2(0.0, 60), glm::vec2(1.0, 1.0), 0.0);
+    truck.AddComponent<RigidBodyComponent>(glm::vec2(20.0, 10.0));
+    truck.AddComponent<SpriteComponent>("truck-image", 32, 32);
 }
 
 void Game::Update() {
@@ -158,7 +158,7 @@ void Game::Render() {
     SDL_RenderClear(renderer);
 
     // Updating all the rendering objects
-    registry->GetSystem<RenderSystem>().Update(renderer);
+    registry->GetSystem<RenderSystem>().Update(renderer, assetStore);
 
     // Presents the renderer (swap the buffers to display the current frame)
     SDL_RenderPresent(renderer);
