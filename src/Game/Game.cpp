@@ -1,4 +1,3 @@
-#include <iostream>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <glm/glm.hpp>
@@ -7,7 +6,9 @@
 #include "../ECS/ECS.h"
 #include "../Components/TransformComponent.h"
 #include "../Components/RigidBodyComponent.h"
+#include "../Components/SpriteComponent.h"
 #include "../Systems/MovementSystem.h"
+#include "../Systems/RenderSystem.h"
 
 Game::Game() {
     isRunning = false;
@@ -109,11 +110,17 @@ void Game::ProcessInput() {
 
 void Game::Setup() {
     registry->AddSystem<MovementSystem>();
+    registry->AddSystem<RenderSystem>();
 
     Entity tank = registry->CreateEntity();
-
-    tank.AddComponent<TransformComponent>(glm::vec2(10, 30));
+    tank.AddComponent<TransformComponent>(glm::vec2(10, 30), glm::vec2(1.0, 1.0), 0.0);
     tank.AddComponent<RigidBodyComponent>(glm::vec2(10.0, 50.0));
+    tank.AddComponent<SpriteComponent>(10, 10);
+
+    Entity truck = registry->CreateEntity();
+    truck.AddComponent<TransformComponent>(glm::vec2(20, 60), glm::vec2(1.0, 1.0), 0.0);
+    truck.AddComponent<RigidBodyComponent>(glm::vec2(20.0, 0.0));
+    truck.AddComponent<SpriteComponent>(20, 20);
 }
 
 void Game::Update() {
@@ -145,7 +152,8 @@ void Game::Render() {
     SDL_SetRenderDrawColor(renderer, 21, 21, 21, 255); 
     SDL_RenderClear(renderer);
 
-    // TODO: Render game objects... 
+    // Updating all the rendering objects
+    registry->GetSystem<RenderSystem>().Update(renderer);
 
     // Presents the renderer (swap the buffers to display the current frame)
     SDL_RenderPresent(renderer);
