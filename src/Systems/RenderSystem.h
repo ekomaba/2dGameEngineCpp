@@ -15,9 +15,30 @@ public:
     }
 
     void Update(SDL_Renderer* renderer, std::unique_ptr<AssetStore>& assetStore) {
+        // Create a vector with both Sprite and Transform component of all entities
+        struct RendableEntity {
+            TransformComponent transformComponent;
+            SpriteComponent spriteComponent;
+        };
+        
+        std::vector<RendableEntity> rendableEntities; 
+        
         for (auto entity : GetSystemEntities()) {
-            const auto transform = entity.GetComponent<TransformComponent>();
-            const auto sprite = entity.GetComponent<SpriteComponent>();
+            RendableEntity rendableEntity;
+            rendableEntity.transformComponent = entity.GetComponent<TransformComponent>();
+            rendableEntity.spriteComponent = entity.GetComponent<SpriteComponent>();
+            rendableEntities.emplace_back(rendableEntity);
+        }
+
+        // Sort Vector
+        std::sort(rendableEntities.begin(), rendableEntities.end(), 
+        [](const RendableEntity& a, const RendableEntity& b) {
+            return a.spriteComponent.zIndex < b.spriteComponent.zIndex; 
+        });
+
+        for (auto entity : rendableEntities) {
+            const auto transform = entity.transformComponent;
+            const auto sprite = entity.spriteComponent;
 
             // Define the portion of the sprite texture to render
             SDL_Rect srcRect = sprite.srcRect;
