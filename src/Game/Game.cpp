@@ -10,9 +10,11 @@
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/SpriteComponent.h"
 #include "../Components/AnimationComponent.h"
+#include "../Components/BoxColliderComponent.h"
 #include "../Systems/MovementSystem.h"
 #include "../Systems/RenderSystem.h"
 #include "../Systems/AnimationSystem.h"
+#include "../Systems/CollisionSystem.h"
 
 Game::Game() {
     isRunning = false;
@@ -115,6 +117,7 @@ void Game::LoadLevel(int level) {
     registry->AddSystem<MovementSystem>();
     registry->AddSystem<RenderSystem>();
     registry->AddSystem<AnimationSystem>();
+    registry->AddSystem<CollisionSystem>();
 
     // Adding Assets
     assetStore->AddTexture(renderer, "tank-image", "./assets/images/tank-panther-right.png");
@@ -162,14 +165,16 @@ void Game::LoadLevel(int level) {
     radar.AddComponent<AnimationComponent>(8, 10, true);
 
     Entity tank = registry->CreateEntity();
-    tank.AddComponent<TransformComponent>(glm::vec2(10.0, 40.0), glm::vec2(1.0, 1.0), 0.0);
-    tank.AddComponent<RigidBodyComponent>(glm::vec2(10.0, 0.0));
+    tank.AddComponent<TransformComponent>(glm::vec2(500.0, 10.0), glm::vec2(1.0, 1.0), 0.0);
+    tank.AddComponent<RigidBodyComponent>(glm::vec2(-20.0, 0.0));
     tank.AddComponent<SpriteComponent>("tank-image", 32, 32, 2);
+    tank.AddComponent<BoxColliderComponent>(32, 32, glm::vec2(0));
 
     Entity truck = registry->CreateEntity();
     truck.AddComponent<TransformComponent>(glm::vec2(10.0, 10.0), glm::vec2(1.0, 1.0), 0.0);
     truck.AddComponent<RigidBodyComponent>(glm::vec2(20.0, 0.0));
     truck.AddComponent<SpriteComponent>("truck-image", 32, 32, 1);
+    truck.AddComponent<BoxColliderComponent>(32, 32, glm::vec2(0));
 }
 
 void Game::Setup() {
@@ -199,6 +204,7 @@ void Game::Update() {
     // Update from systems
     registry->GetSystem<MovementSystem>().Update(deltaTime);
     registry->GetSystem<AnimationSystem>().Update();
+    registry->GetSystem<CollisionSystem>().Update();
 }
 
 void Game::Render() {
