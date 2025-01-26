@@ -15,10 +15,11 @@
 #include "../Systems/RenderSystem.h"
 #include "../Systems/AnimationSystem.h"
 #include "../Systems/CollisionSystem.h"
+#include "../Systems/RenderColliderSystem.h"
 
 Game::Game() {
     isRunning = false;
-    
+    isDebug = false;
     registry = std::make_unique<Registry>();
     assetStore = std::make_unique<AssetStore>();
     Logger::Log("Game Constructor called!");
@@ -107,6 +108,9 @@ void Game::ProcessInput() {
                 if (sdlEvent.key.keysym.sym == SDLK_ESCAPE) {
                     isRunning = false;
                 }
+                if (sdlEvent.key.keysym.sym == SDLK_d) {
+                    isDebug = !isDebug;
+                }
                 break;
         }
     }
@@ -118,6 +122,7 @@ void Game::LoadLevel(int level) {
     registry->AddSystem<RenderSystem>();
     registry->AddSystem<AnimationSystem>();
     registry->AddSystem<CollisionSystem>();
+    registry->AddSystem<RenderColliderSystem>();
 
     // Adding Assets
     assetStore->AddTexture(renderer, "tank-image", "./assets/images/tank-panther-right.png");
@@ -214,6 +219,10 @@ void Game::Render() {
 
     // Updating all the rendering objects
     registry->GetSystem<RenderSystem>().Update(renderer, assetStore);
+    
+    if (isDebug) {
+        registry->GetSystem<RenderColliderSystem>().Update(renderer);
+    }
 
     // Presents the renderer (swap the buffers to display the current frame)
     SDL_RenderPresent(renderer);
