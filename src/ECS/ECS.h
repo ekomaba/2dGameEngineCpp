@@ -7,6 +7,7 @@
 #include <typeindex>
 #include <set>
 #include <memory>
+#include <deque>
 #include "../Logger/Logger.h"
 
 const unsigned int MAX_COMPONENTS = 32;
@@ -39,6 +40,7 @@ public:
     Entity (int id) : id(id) {}; 
     Entity(const Entity& entity) = default;
     int GetId() const { return id; }
+    void Kill();
 
     Entity& operator =(const Entity& other) = default;
     bool operator ==(const Entity& other) const { return id == other.id; }
@@ -105,6 +107,7 @@ private:
     std::unordered_map<std::type_index, std::shared_ptr<System>> systems;
     std::set<Entity> entitiesToBeAdded;
     std::set<Entity> entitiesToBeKilled;
+    std::deque<int> freeIds;
 
 public:
     Registry();
@@ -112,6 +115,8 @@ public:
 
     // Entity management
     Entity CreateEntity();
+
+    void KillEntity(Entity entity);
 
     // Component management
     template <typename TComponent, typename ...TArgs> void AddComponent(Entity entity, TArgs&& ...args);
@@ -125,8 +130,9 @@ public:
     template <typename TSystem> bool HasSystem() const;
     template <typename TSystem> TSystem& GetSystem() const;
 
-    // Check the component signature of an entity and add the entity to the systems that match
+    // Add and remove systems from the systems
     void AddEntityToSystems(Entity entity);
+    void RemoveEntityFromSystems(Entity entity);
 
     // Processes the entities that are waiting to be added/killed
     void Update();
