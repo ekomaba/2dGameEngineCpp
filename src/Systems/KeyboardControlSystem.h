@@ -4,11 +4,16 @@
 #include "../ECS/ECS.h"
 #include "../EventBus/EventBus.h"
 #include "../Event/KeyPressedEvent.h"
-#include "../Logger/Logger.h"
+#include "../Components/KeyboardControlledComponent.h"
+#include "../Components/RigidBodyComponent.h"
+#include "../Components/SpriteComponent.h"
 
 class KeyboardControlSystem : public System {
 public:
     KeyboardControlSystem() {
+        RequireComponent<KeyboardControlledComponent>();
+        RequireComponent<SpriteComponent>();
+        RequireComponent<RigidBodyComponent>();
 
     }
 
@@ -17,9 +22,33 @@ public:
     }
 
     void onButtonPressed(KeyPressedEvent& event) {
-        std::string keyCode = std::to_string(event.symbol);
-        std::string keySymbol(1, event.symbol);
-        Logger::Log("Key pressed event emitted: [" + keyCode + "] " + keySymbol);
+        for (auto entity : GetSystemEntities()) {
+            const auto keyboardcontrol = entity.GetComponent<KeyboardControlledComponent>();
+            auto& sprite = entity.GetComponent<SpriteComponent>();
+            auto& rigidbody = entity.GetComponent<RigidBodyComponent>();
+
+            switch(event.symbol) {
+                case SDLK_UP:
+                rigidbody.velocity = keyboardcontrol.upVelocity;
+                sprite.srcRect.y = sprite.height * 0; 
+                break;
+
+                case SDLK_RIGHT:
+                rigidbody.velocity = keyboardcontrol.rightVelocity;
+                sprite.srcRect.y = sprite.height * 1; 
+                break;
+
+                case SDLK_DOWN:
+                rigidbody.velocity = keyboardcontrol.downVelocity;
+                sprite.srcRect.y = sprite.height * 2; 
+                break;
+
+                case SDLK_LEFT:
+                rigidbody.velocity = keyboardcontrol.leftVelocity;
+                sprite.srcRect.y = sprite.height * 3;
+                break;
+            }
+        }
     }
 
     void Update() {
