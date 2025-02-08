@@ -57,14 +57,10 @@ public:
         Logger::Log("EventBus destructor called!");
     }
 
-    // Clears the subscribers list
     void Reset() {
         subscribers.clear();
     }
 
-    // Subscribe to an event type <T>
-    // In our implementation, a listener subscribes to an event
-    // Example: eventBus->SubscribeToEvent<CollisionEvent>(this, &Game::onCollision);
     template <typename TEvent, typename TOwner>
     void SubscribeToEvent(TOwner* ownerInstance, void (TOwner::*callbackFunction)(TEvent&)) {
         
@@ -77,10 +73,6 @@ public:
         subscribers[typeid(TEvent)]->push_back(std::move(subscriber));
     }
 
-    // Emit an event of type <T>
-    // In our implementation, as soon as something emits an
-    // event we go ahead and execute all the listener callback functions
-    // Example: eventBus->EmitEvent<CollisionEvent>(player, enemy);
     template <typename TEvent, typename ...TArgs>
     void EmitEvent(TArgs&& ...args) {
         auto handlers = subscribers[typeid(TEvent)].get();
