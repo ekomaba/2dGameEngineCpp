@@ -45,8 +45,8 @@ public:
 
             // Define the position and size of the sprite on the screen
             SDL_Rect dstRect = {
-                static_cast<int>(transform.position.x - camera.x),
-                static_cast<int>(transform.position.y - camera.y),
+                static_cast<int>(transform.position.x - (sprite.isFixed ? 0 : camera.x)),
+                static_cast<int>(transform.position.y - (sprite.isFixed ? 0 : camera.y)),
                 static_cast<int>(sprite.width * transform.scale.x),
                 static_cast<int>(sprite.height * transform.scale.y)
             };
