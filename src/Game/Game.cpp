@@ -24,6 +24,7 @@
 #include "../Systems/KeyboardControlSystem.h"
 #include "../Systems/CameraMovementSystem.h"
 #include "../Systems/ProjectileEmitSystem.h"
+#include "../Systems/ProjectileLifecycleSystem.h"
 
 int Game::windowWidth;
 int Game::windowHeight;
@@ -150,6 +151,7 @@ void Game::LoadLevel(int level) {
     registry->AddSystem<KeyboardControlSystem>();
     registry->AddSystem<CameraMovementSystem>();
     registry->AddSystem<ProjectileEmitSystem>();
+    registry->AddSystem<ProjectileLifecycleSystem>();
     
     // Adding Assets
     assetStore->AddTexture(renderer, "tank-image", "./assets/images/tank-panther-right.png");
@@ -204,11 +206,11 @@ void Game::LoadLevel(int level) {
     radar.AddComponent<AnimationComponent>(8, 10, true);
 
     Entity tank = registry->CreateEntity();
-    tank.AddComponent<TransformComponent>(glm::vec2(500.0, 10.0), glm::vec2(1.0, 1.0), 0.0);
+    tank.AddComponent<TransformComponent>(glm::vec2(800.0, 10.0), glm::vec2(1.0, 1.0), 0.0);
     tank.AddComponent<RigidBodyComponent>(glm::vec2(0.0, 0.0));
     tank.AddComponent<SpriteComponent>("tank-image", 32, 32, 2);
     tank.AddComponent<BoxColliderComponent>(32, 32, glm::vec2(0));
-    tank.AddComponent<ProjectileEmitterComponent>(glm::vec2(-100,0), 1000, 10000, 0, false);
+    tank.AddComponent<ProjectileEmitterComponent>(glm::vec2(-100,0), 1000, 3000, 0, false);
     tank.AddComponent<HealthComponent>(50);
 
     Entity truck = registry->CreateEntity();
@@ -216,7 +218,7 @@ void Game::LoadLevel(int level) {
     truck.AddComponent<RigidBodyComponent>(glm::vec2(0.0, 0.0));
     truck.AddComponent<SpriteComponent>("truck-image", 32, 32, 1);
     truck.AddComponent<BoxColliderComponent>(32, 32, glm::vec2(0));
-    truck.AddComponent<ProjectileEmitterComponent>(glm::vec2(100,0), 1000, 10000, 0, false);
+    truck.AddComponent<ProjectileEmitterComponent>(glm::vec2(0,100), 100, 1000, 0, false);
     truck.AddComponent<HealthComponent>(50);
 }
 
@@ -258,6 +260,7 @@ void Game::Update() {
     registry->GetSystem<DamageSystem>().Update();
     registry->GetSystem<CameraMovementSystem>().Update(camera);
     registry->GetSystem<ProjectileEmitSystem>().Update(registry);
+    registry->GetSystem<ProjectileLifecycleSystem>().Update();
 }
 
 void Game::Render() {
