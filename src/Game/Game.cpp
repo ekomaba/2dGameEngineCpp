@@ -196,10 +196,11 @@ void Game::LoadLevel(int level) {
     chopper.AddComponent<RigidBodyComponent>(glm::vec2(0.0, 0.0));
     chopper.AddComponent<SpriteComponent>("chopper-image", 32, 32, 1);
     chopper.AddComponent<AnimationComponent>(2, 15, true);
-    chopper.AddComponent<KeyboardControlledComponent>(glm::vec2(0, -160), glm::vec2(160, 0), glm::vec2(0, 160), glm::vec2(-160, 0));
+    chopper.AddComponent<KeyboardControlledComponent>(glm::vec2(0, -80), glm::vec2(80, 0), glm::vec2(0, 80), glm::vec2(-80, 0));
     chopper.AddComponent<CameraFollowComponent>();
+    chopper.AddComponent<ProjectileEmitterComponent>(glm::vec2(150.0, 150.0), 0, 10000, 0 , true);
     chopper.AddComponent<HealthComponent>(100);
-
+    
     Entity radar = registry->CreateEntity();
     radar.AddComponent<TransformComponent>(glm::vec2(windowWidth - 70, 10.0), glm::vec2(1.0, 1.0), 0.0);
     radar.AddComponent<SpriteComponent>("radar-image", 64, 64, 1, true);
@@ -249,6 +250,7 @@ void Game::Update() {
     // Perform subscription of the events for all systems
     registry->GetSystem<DamageSystem>().SubscribeToEvents(eventBus);
     registry->GetSystem<KeyboardControlSystem>().SubscribeToEvents(eventBus);
+    registry->GetSystem<ProjectileEmitSystem>().SubscribeToEvents(eventBus);
 
     // Update the registry to process the entities that are waiting to be created/deleted
     registry->Update();
