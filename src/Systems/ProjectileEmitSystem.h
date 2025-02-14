@@ -1,11 +1,16 @@
-#ifndef PROJECTILEEMITSYSTEM
-#define PROJECTILEEMITSYSTEM
+#ifndef PROJECTILEEMITSYSTEM_H
+#define PROJECTILEEMITSYSTEM_H
 
 #include "../ECS/ECS.h"
+#include "../EventBus/EventBus.h"
+#include "../Event/KeyPressedEvent.h"
 #include "../Components/TransformComponent.h"
-#include "../Components/ProjectileEmitterComponent.h"
+#include "../Components/RigidBodyComponent.h"
 #include "../Components/SpriteComponent.h"
+#include "../Components/BoxColliderComponent.h"
 #include "../Components/ProjectileComponent.h"
+#include "../Components/ProjectileEmitterComponent.h"
+#include "../Components/CameraFollowComponent.h"
 #include <SDL2/SDL.h>
 
 class ProjectileEmitSystem : public System {
@@ -22,8 +27,8 @@ public:
     void OnKeyPressed(KeyPressedEvent& event) {
         if (event.symbol == SDLK_SPACE) {
             for (auto entity : GetSystemEntities()) {
-                // if the entity has CameraFollowComponent its the player
-                if (entity.HasComponent<CameraFollowComponent>()) {
+                // update to check if is the player
+                if (entity.HasTag("player")) {
                     const auto projectileEmitter = entity.GetComponent<ProjectileEmitterComponent>();
                     const auto transform = entity.GetComponent<TransformComponent>();
                     const auto rigidbody = entity.GetComponent<RigidBodyComponent>();
@@ -50,6 +55,7 @@ public:
 
                     // Create new projectile entity and add it to the world
                     Entity projectile = entity.registry->CreateEntity();
+                    projectile.Group("projectiles");
                     projectile.AddComponent<TransformComponent>(projectilePosition, glm::vec2(1.0, 1.0), 0.0);
                     projectile.AddComponent<RigidBodyComponent>(projectileVelocity);
                     projectile.AddComponent<SpriteComponent>("bullet-image", 4, 4, 4);
@@ -85,6 +91,7 @@ public:
                 }
                 
                 Entity projectile = registry->CreateEntity();
+                projectile.Group("projectiles");
                 projectile.AddComponent<TransformComponent>(projectilePosition, glm::vec2(1.0,1.0), 0.0);
                 projectile.AddComponent<RigidBodyComponent>(projectileEmitter.projectileVelocity);
                 projectile.AddComponent<SpriteComponent>("bullet-image", 4, 4, 4);

@@ -31,3 +31,4 @@
 *.out
 *.app
 gameengine
+.vscode/settings.json
