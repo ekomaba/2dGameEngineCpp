@@ -112,6 +112,12 @@ void Registry::Update() {
     for (auto entity : entitiesToBeKilled) {
         RemoveEntityFromSystems(entity);
         entityComponentSignatures[entity.GetId()].reset();
+
+        // remove the entity from the component pools
+        for (auto pool : componentPools) {
+            pool->RemoveEntityFromPool(entity.GetId());
+        }
+
         freeIds.push_back(entity.GetId());
 
         //remove any traces of entity from the tag/group
