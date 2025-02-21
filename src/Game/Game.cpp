@@ -27,6 +27,7 @@
 #include "../Systems/ProjectileEmitSystem.h"
 #include "../Systems/ProjectileLifecycleSystem.h"
 #include "../Systems/RenderTextSystem.h"
+#include "../Systems/RenderHealthBarSystem.h"
 
 int Game::windowWidth;
 int Game::windowHeight;
@@ -160,6 +161,7 @@ void Game::LoadLevel(int level) {
     registry->AddSystem<ProjectileEmitSystem>();
     registry->AddSystem<ProjectileLifecycleSystem>();
     registry->AddSystem<RenderTextSystem>();
+    registry->AddSystem<RenderHealthBarSystem>();
     
     // Adding Assets
     assetStore->AddTexture(renderer, "tank-image", "./assets/images/tank-panther-right.png");
@@ -169,6 +171,8 @@ void Game::LoadLevel(int level) {
     assetStore->AddTexture(renderer, "tilemap-image", "./assets/tilemaps/jungle.png");
     assetStore->AddTexture(renderer, "bullet-image", "./assets/images/bullet.png");
     assetStore->AddFont("charriot-font", "./assets/fonts/charriot.ttf", 22);
+    assetStore->AddFont("pico8-font-5", "./assets/fonts/arial.ttf", 5 * 2);
+    assetStore->AddFont("pico8-font-10", "./assets/fonts/arial.ttf", 10 * 2);
     
     // Load the tilemap
     int tileSize = 32;
@@ -292,6 +296,7 @@ void Game::Render() {
     // Updating all the rendering objects
     registry->GetSystem<RenderSystem>().Update(renderer, assetStore, camera);
     registry->GetSystem<RenderTextSystem>().Update(renderer, assetStore, camera);
+    registry->GetSystem<RenderHealthBarSystem>().Update(renderer, assetStore, camera);
     
     if (isDebug) {
         registry->GetSystem<RenderColliderSystem>().Update(renderer, camera);
