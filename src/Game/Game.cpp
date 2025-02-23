@@ -3,6 +3,9 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <glm/glm.hpp>
+#include <imgui/imgui.h>
+#include <imgui/imgui_sdl.h>
+#include <imgui/imgui_impl_sdl.h>
 #include "Game.h"
 #include "../Logger/Logger.h"
 #include "../ECS/ECS.h"
@@ -28,6 +31,7 @@
 #include "../Systems/ProjectileLifecycleSystem.h"
 #include "../Systems/RenderTextSystem.h"
 #include "../Systems/RenderHealthBarSystem.h"
+
 
 int Game::windowWidth;
 int Game::windowHeight;
@@ -100,6 +104,10 @@ void Game::Initialize() {
         return;
     }
 
+    // Initialize the imgui context
+    ImGui::CreateContext();
+    ImGuiSDL::Initialize(renderer, windowWidth, windowHeight);
+
     camera.x = 0;
     camera.y = 0;
     camera.w = windowWidth;
@@ -120,6 +128,8 @@ void Game::Run() {
 
 void Game::Destroy() {
     Logger::Log("Destroying the game instance!");
+    ImGuiSDL::Deinitialize();
+    ImGui::DestroyContext();
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
@@ -128,6 +138,20 @@ void Game::Destroy() {
 void Game::ProcessInput() {
     SDL_Event sdlEvent;
     while (SDL_PollEvent(&sdlEvent)) {
+        // ImGui SDL input
+        ImGui_ImplSDL2_ProcessEvent(&sdlEvent);
+
+        // Populate our input info
+        ImGuiIO& io = ImGui::GetIO();
+
+        // Mouse info for ImGui
+        int mouseX, mouseY;
+        const int buttons = SDL_GetMouseState(&mouseX, &mouseY);
+        io.MousePos = ImVec2(mouseX, mouseY);
+        io.MouseDown[0] = buttons & SDL_BUTTON(SDL_BUTTON_LEFT);
+        io.MouseDown[1] = buttons & SDL_BUTTON(SDL_BUTTON_RIGHT);
+
+        // Handle core SDL events (close window, key pressed, etc)
         switch(sdlEvent.type) {
             case SDL_QUIT:
                 isRunning = false;
@@ -300,6 +324,10 @@ void Game::Render() {
     
     if (isDebug) {
         registry->GetSystem<RenderColliderSystem>().Update(renderer, camera);
+        ImGui::NewFrame();
+        ImGui::ShowDemoWindow();
+        ImGui::Render();
+        ImGuiSDL::Render(ImGui::GetDrawData());
     }
 
     // Presents the renderer (swap the buffers to display the current frame)
