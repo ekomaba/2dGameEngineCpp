@@ -31,6 +31,7 @@
 #include "../Systems/ProjectileLifecycleSystem.h"
 #include "../Systems/RenderTextSystem.h"
 #include "../Systems/RenderHealthBarSystem.h"
+#include "../Systems/RenderGUISystem.h"
 
 
 int Game::windowWidth;
@@ -186,6 +187,7 @@ void Game::LoadLevel(int level) {
     registry->AddSystem<ProjectileLifecycleSystem>();
     registry->AddSystem<RenderTextSystem>();
     registry->AddSystem<RenderHealthBarSystem>();
+    registry->AddSystem<RenderGUISystem>();
     
     // Adding Assets
     assetStore->AddTexture(renderer, "tank-image", "./assets/images/tank-panther-right.png");
@@ -324,10 +326,7 @@ void Game::Render() {
     
     if (isDebug) {
         registry->GetSystem<RenderColliderSystem>().Update(renderer, camera);
-        ImGui::NewFrame();
-        ImGui::ShowDemoWindow();
-        ImGui::Render();
-        ImGuiSDL::Render(ImGui::GetDrawData());
+        registry->GetSystem<RenderGUISystem>().Update();
     }
 
     // Presents the renderer (swap the buffers to display the current frame)
